@@ -27,10 +27,11 @@ $payload = [
     'text'     => $text,
     'model_id' => ELEVENLABS_MODEL,
     'voice_settings' => [
-        'stability'        => 0.45, // un poco de variación = más humano
-        'similarity_boost' => 0.85,
-        'style'            => 0.20,
+        'stability'        => 0.55, // estable y serena (tono de acompañamiento)
+        'similarity_boost' => 0.80,
+        'style'            => 0.0,  // sin exageración = suave y natural
         'use_speaker_boost'=> true,
+        'speed'            => 0.92, // un poco más pausada (terapeuta)
     ],
 ];
 
