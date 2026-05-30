@@ -47,3 +47,30 @@ if (defined('OPENAI_API_KEY') && strpos(OPENAI_API_KEY, 'XXXX') === false) {
     echo "No hay clave de OpenAI válida (placeholder o no definida).\n";
     echo ">>> Esto explicaría el fallo del guía: la clave no se está cargando.\n";
 }
+
+echo "\n--- 4) Probar ElevenLabs (voz) ---\n";
+echo "ELEVENLABS_API_KEY: " . (defined('ELEVENLABS_API_KEY') && strpos(ELEVENLABS_API_KEY, 'XXXX') === false ? ("SI (largo " . strlen(ELEVENLABS_API_KEY) . ")") : "NO / placeholder") . "\n";
+echo "Voice ID: " . (defined('ELEVENLABS_VOICE_ID') ? ELEVENLABS_VOICE_ID : "(no definido)") . "\n";
+if (defined('ELEVENLABS_API_KEY') && strpos(ELEVENLABS_API_KEY, 'XXXX') === false) {
+    $vid = defined('ELEVENLABS_VOICE_ID') ? ELEVENLABS_VOICE_ID : '';
+    $model = defined('ELEVENLABS_MODEL') ? ELEVENLABS_MODEL : 'eleven_multilingual_v2';
+    $u = 'https://api.elevenlabs.io/v1/text-to-speech/' . rawurlencode($vid);
+    $pl = ['text' => 'Hola, esto es una prueba.', 'model_id' => $model];
+    $ch = curl_init($u);
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'Accept: audio/mpeg', 'xi-api-key: ' . ELEVENLABS_API_KEY],
+        CURLOPT_POSTFIELDS => json_encode($pl),
+    ]);
+    $r = curl_exec($ch); $c = curl_getinfo($ch, CURLINFO_HTTP_CODE); $ct = curl_getinfo($ch, CURLINFO_CONTENT_TYPE); $er = curl_error($ch); curl_close($ch);
+    echo "HTTP ElevenLabs: $c\n";
+    echo "Content-Type: $ct\n";
+    echo "curl: " . ($er ?: "(ok)") . "\n";
+    if (stripos((string)$ct, 'audio') !== false) {
+        echo ">>> AUDIO OK — la voz SÍ funciona en el servidor (bytes=" . strlen($r) . "). Si en la app suena robótica, es que falta RECARGAR la app de cero.\n";
+    } else {
+        echo ">>> Respuesta de error de ElevenLabs:\n" . $r . "\n";
+    }
+} else {
+    echo ">>> Falta la clave de ElevenLabs en secrets.php (o quedó como placeholder).\n";
+}
