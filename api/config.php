@@ -8,9 +8,18 @@
  *    así que los deploys automáticos NUNCA borran tus claves.
  */
 
-// 1) Cargar secretos del servidor (si existen)
-$__secrets = __DIR__ . '/secrets.php';
-if (is_file($__secrets)) require_once $__secrets;
+// 1) Cargar secretos del servidor (si existen).
+//    Buscamos PRIMERO fuera de public_html: ahí los deploys de Git NO lo borran.
+$__secretFiles = [
+    __DIR__ . '/../../secrets.php', // RECOMENDADO: junto a public_html (sobrevive deploys)
+    __DIR__ . '/secrets.php',        // alterno: dentro de api (un deploy puede borrarlo)
+];
+foreach ($__secretFiles as $__f) {
+    if (is_file($__f)) { require_once $__f; break; }
+}
+// Alternativa: variables de entorno (si el hosting las soporta)
+if (!defined('OPENAI_API_KEY') && getenv('OPENAI_API_KEY'))         define('OPENAI_API_KEY', getenv('OPENAI_API_KEY'));
+if (!defined('ELEVENLABS_API_KEY') && getenv('ELEVENLABS_API_KEY')) define('ELEVENLABS_API_KEY', getenv('ELEVENLABS_API_KEY'));
 
 // 2) Defaults si falta algún secreto (placeholder => el backend avisa "falta configurar")
 if (!defined('OPENAI_API_KEY'))     define('OPENAI_API_KEY', 'sk-XXXX');
