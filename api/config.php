@@ -29,7 +29,7 @@ if (!defined('TD_API_TOKEN'))       define('TD_API_TOKEN', '');
 // 3) Valores NO secretos
 if (!defined('TD_MODEL'))            define('TD_MODEL', 'gpt-4o');
 if (!defined('ELEVENLABS_VOICE_ID')) define('ELEVENLABS_VOICE_ID', 'iDEmt5MnqUotdwCIVplo');
-if (!defined('ELEVENLABS_MODEL'))    define('ELEVENLABS_MODEL', 'eleven_multilingual_v2');
+if (!defined('ELEVENLABS_MODEL'))    define('ELEVENLABS_MODEL', 'eleven_turbo_v2_5'); // más rápido (baja latencia), multilingüe
 
 // ── CORS y errores ────────────────────────────────────────────
 header('Access-Control-Allow-Origin: *');
